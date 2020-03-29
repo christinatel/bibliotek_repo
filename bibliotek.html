@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+          
+            <title>Bibliotek</title>
+        
+            <style>
+            
+                
+            </style>
+            <h1 id="heading">Christina's bibliotek</h1>
+  
+
+
+        </head>
+        
+<body>
+    
+    
+    <form action="javascript:void(0);">
+        
+        Tittel:                 <input type="text" id="txtTittel">
+        <br> <br>
+        Utgivelsesår:           <input type="date" id="år">
+        <br> <br>
+        Navn på forfatter:      <input type="text" id="txtForfatter">
+        <br> <br>
+        Forlag:                 <input type="text" id="txtForlag">
+        <br> <br>
+        Min vurdering av boken: <input type="number" id="tallVurdering" class="form-control" min="1" max="6">
+        <br> <br>
+        <input submit type="button" onclick="sendInn(); visDatabase()"value="Send Inn!">
+        
+            <div id = "posts"></div>
+      
+        </form> <br>
+    <div id="svarFelt"></div>
+    </body>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDy3fcLyoJsqItPbTqk_Oo8mifNWQBz6DA",
+    authDomain: "bibliotek-oppgave.firebaseapp.com",
+    databaseURL: "https://bibliotek-oppgave.firebaseio.com",
+    projectId: "bibliotek-oppgave",
+    storageBucket: "bibliotek-oppgave.appspot.com",
+    messagingSenderId: "710150016052",
+    appId: "1:710150016052:web:9bec51c9a368009c804e61"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>  
+        <script>
+      
+            let tittel = document.getElementById("txtTittel")
+            let utgivelsesår = document.getElementById("år")
+            let forfatter = document.getElementById("txtForfatter")
+            let forlag = document.getElementById("txtForlag")
+            let vurdering = document.getElementById("tallVurdering")
+            
+            let db = firebase.database();
+            let bibliotek = db.ref("bibliotek");
+            
+            function sendInn(){
+                var tittel_in = document.getElementById("txtTittel").value
+                var utgivelsesår_in = document.getElementById("år").value
+                var forfatter_in = document.getElementById("txtForfatter").value
+                var forlag_in = document.getElementById("txtForlag").value
+                var vurdering_in = document.getElementById("tallVurdering").value
+                
+                var today = new Date();
+                var dateTime = today.getFullYear()+"0"+today.getMonth()+"1"+today.getDate()+""+today.getHours()+""+today.getMinutes()+""+today.getSeconds();
+                
+              let new_object = bibliotek.child(dateTime);
+                 
+            bibliotek.push({ 
+            tittel : tittel_in,
+            utgivelsesår : utgivelsesår_in,
+            forfatter : forfatter_in,
+            forlag : forlag_in,
+            vurdering : vurdering_in,
+            } );
+        window.alert("beskjed lagt til i database");
+            }
+            
+            function visDatabase(){
+                function visDatabase_hjelpefunksjon(snapshot){
+                    let timestamp = snapshot.key;
+                    let navn_og_tekst  = snapshot.val();
+                    posts.innerHTML += `<div>Navn: ${navn_og_tekst.navn} - Tekst: ${navn_og_tekst.Melding}</div>`;
+                }
+            bibliotek.on("child_added", visDatabase_hjelpefunksjon)
+             }
+        </script>
+     
+</html>
